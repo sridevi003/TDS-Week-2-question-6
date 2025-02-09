@@ -1,35 +1,35 @@
-name: 24f2007378@ds.study.iitm.ac.in
+name: Daily Commit Workflow
 
 on:
   schedule:
-    - cron: "0 0 * * *" # Runs daily at 00:00 UTC
-  workflow_dispatch: # Allows manual triggering
+    # Cron syntax to run the workflow daily at 2:00 AM UTC
+    - cron: '0 2 * * *'  
 
 jobs:
-  daily-update:
+  commit_changes:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Make a change
-        run: |
-          echo "Daily update $(date)" > daily_update.txt
-          git add daily_update.txt
+    - name: Add daily commit by 24f2007378@ds.study.iitm.ac.in
+      run: |
+        # Create a new file or modify an existing one
+        echo "Daily commit at $(date)" > daily_commit_log.txt
+        
+        # Stage the changes
+        git add daily_commit_log.txt
+        
+        # Commit the changes
+        git config --global user.email "24f2007378@ds.study.iitm.ac.in"
+        git config --global user.name "DevSync Automation"
+        git commit -m "Automated daily commit by 24f2007378@ds.study.iitm.ac.in"
+        
+        # Push the commit to the repository
+        git push
 
-      - name: Configure Git with user email and name
-        run: |
-          git config --local user.email "24f2007378@ds.study.iitm.ac.in" # Correct: Email here
-          git config --local user.name "github-actions[bot]"
-
-      - name: Commit changes
-        run: git commit -m "Automated daily update" || exit 0
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+    - name: Confirm commit and push
+      run: |
+        # Show the latest commit for verification
+        git log -n 1
