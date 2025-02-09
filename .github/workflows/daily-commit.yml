@@ -2,32 +2,34 @@ name: Daily Commit
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Runs at 00:00 UTC every day (adjust as needed)
+    - cron: "0 0 * * *" # Runs daily at 00:00 UTC
   workflow_dispatch: # Allows manual triggering
 
 jobs:
   daily-update:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Important: Grants write access to the repository
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Add a file or make a change
+      - name: Make a change
         run: |
-          echo "Daily update $(date)" > daily_update.txt # Creates/updates a file
+          echo "Daily update $(date)" > daily_update.txt
           git add daily_update.txt
 
-      - name: Commit changes with your email
+      - name: Configure Git with user email and name
         run: |
-          git config --local user.email "24f2007378@ds.study.iitm.ac.in" # Your email here
+          git config --local user.email "24f2007378@ds.study.iitm.ac.in" # Correct: Email here
           git config --local user.name "github-actions[bot]"
-          git commit -m "Automated daily update" || exit 0 # Allow empty commits
+
+      - name: Commit changes
+        run: git commit -m "Automated daily update" || exit 0
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }} # Push to the same branch that triggered the workflow
+          branch: ${{ github.ref }}
